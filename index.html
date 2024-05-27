@@ -55,15 +55,13 @@
     function renderThoughts() {
         const thoughtsDiv = document.getElementById('thoughts');
         thoughtsDiv.innerHTML = thoughts.length > 0 ? '<h2>Thoughts</h2>' : '';
-        thoughts.forEach((thought, index) => {
-            thoughtsDiv.innerHTML += `
-                <div class="thought" data-index="${index}">
-                    ${thought.text} <span class="timestamp">(${thought.timestamp})</span>
-                    <span class="edit" onclick="editThought(${index})">edit</span>
-                    <span class="delete" onclick="deleteThought(${index})">delete</span>
-                </div>
-            `;
-        });
+        thoughtsDiv.innerHTML += thoughts.map((thought, index) => `
+            <div class="thought" data-index="${index}">
+                ${thought.text} <span class="timestamp">(${thought.timestamp})</span>
+                <span class="edit" onclick="editThought(${index})">edit</span>
+                <span class="delete" onclick="deleteThought(${index})">delete</span>
+            </div>
+        `).reverse().join('');
     }
 
     function saveThoughts() {
@@ -111,4 +109,3 @@
 
 </body>
 </html>
-
