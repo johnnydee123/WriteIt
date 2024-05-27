@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write it Down</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: white;
+            color: black;
+            margin: 20px;
+        }
+        h1 {
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 60%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .thought {
+            margin: 10px 0;
+        }
+        .edit, .delete {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .edit:hover, .delete:hover {
+            text-decoration: underline;
+        }
+        .forgotten-thoughts {
+            margin-top: 20px;
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Write it down.</h1>
+<input type="text" id="thoughtInput" placeholder="Type your thought here and press Enter">
+<div id="thoughts"></div>
+<a href="forgotten-thoughts.html" class="forgotten-thoughts">Forgotten Thoughts</a>
+
+<script>
+    let thoughts = JSON.parse(localStorage.getItem('thoughts')) || [];
+    let deletedThoughts = JSON.parse(localStorage.getItem('deletedThoughts')) || [];
+
+    console.log('Initial Thoughts:', thoughts);
+    console.log('Initial Deleted Thoughts:', deletedThoughts);
+
+    function renderThoughts() {
+        const thoughtsDiv = document.getElementById('thoughts');
+        thoughtsDiv.innerHTML = thoughts.length > 0 ? '<h2>Thoughts</h2>' : '';
+        thoughts.forEach((thought, index) => {
+            thoughtsDiv.innerHTML += `
+                <div class="thought" data-index="${index}">
+                    ${thought.text} <span class="timestamp">(${thought.timestamp})</span>
+                    <span class="edit" onclick="editThought(${index})">edit</span>
+                    <span class="delete" onclick="deleteThought(${index})">delete</span>
+                </div>
+            `;
+        });
+    }
+
+    function saveThoughts() {
+        localStorage.setItem('thoughts', JSON.stringify(thoughts));
+        console.log('Saved Thoughts:', thoughts);
+    }
+
+    function saveDeletedThoughts() {
+        localStorage.setItem('deletedThoughts', JSON.stringify(deletedThoughts));
+        console.log('Saved Deleted Thoughts:', deletedThoughts);
+    }
+
+    document.getElementById('thoughtInput').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            const text = this.value.trim();
+            if (text) {
+                const timestamp = new Date().toLocaleString();
+                thoughts.push({ text, timestamp });
+                saveThoughts();
+                renderThoughts();
+                this.value = '';
+            }
+        }
+    });
+
+    function editThought(index) {
+        const newText = prompt('Edit your thought:', thoughts[index].text);
+        if (newText !== null) {
+            thoughts[index].text = newText.trim();
+            saveThoughts();
+            renderThoughts();
+        }
+    }
+
+    function deleteThought(index) {
+        const deleted = thoughts.splice(index, 1)[0];
+        deletedThoughts.push(deleted);
+        saveThoughts();
+        saveDeletedThoughts();
+        renderThoughts();
+    }
+
+    renderThoughts();
+</script>
+
+</body>
+</html>
+

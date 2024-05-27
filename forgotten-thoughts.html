@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgotten Thoughts</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: white;
+            color: black;
+            margin: 20px;
+        }
+        h1 {
+            font-weight: bold;
+        }
+        .thought {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Forgotten Thoughts</h1>
+<div id="forgottenThoughts"></div>
+
+<script>
+    const deletedThoughts = JSON.parse(localStorage.getItem('deletedThoughts')) || [];
+
+    console.log('Deleted Thoughts:', deletedThoughts);
+
+    function renderDeletedThoughts() {
+        const forgottenThoughtsDiv = document.getElementById('forgottenThoughts');
+        deletedThoughts.forEach(thought => {
+            forgottenThoughtsDiv.innerHTML += `
+                <div class="thought">
+                    ${thought.text} <span class="timestamp">(${thought.timestamp})</span>
+                </div>
+            `;
+        });
+    }
+
+    renderDeletedThoughts();
+</script>
+
+</body>
+</html>
